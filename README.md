@@ -68,3 +68,89 @@ It was created by [IBM Emerging Technology](https://www.ibm.com/blogs/emerging-t
 ## Copyright and license
 
 Copyright OpenJS Foundation and other contributors, https://openjsf.org under [the Apache 2.0 license](LICENSE).
+
+# Alteções Denox
+Alterações visuais para embedar Node-RED no GO
+
+Salvamento automático e retirada de avisos pós salvamento
+Pasta: node-red/packages/node_modules/@node-red/editor-client/src/js/ui/deploy.js
+Editar arquivo deploy.js:
+function save(skipValidation,force) {
+        //Comentar linhas
+        // $("#red-ui-header-shade").show();
+        // $("#red-ui-editor-shade").show();
+        // $("#red-ui-palette-shade").show();
+        // $("#red-ui-sidebar-shade").show();
+        ...
+        //Comentar retorno visual
+	if (hasUnusedConfig) {
+            // RED.notify(
+            // '<p>'+RED._("deploy.successfulDeploy")+'</p>'+
+            // '<p>'+RED._("deploy.unusedConfigNodes")+' <a href="#" onclick="RED.sidebar.config.show(true); return false;">'+RED._("deploy.unusedConfigNodesLink")+'</a></p>',"success",false,6000);
+        } else {
+            // RED.notify('<p>'+RED._("deploy.successfulDeploy")+'</p>',"success");
+        }
+                
+	//Antes do return
+	//Funcao que executa repetição de salvar a cada 1s
+	
+        setInterval(save, 1000);
+
+	return {
+	  ...
+	}
+}
+
+# Alteração visual para retirada da barra de menu principal
+# ARQUIVO 01
+Path: node-red/packages/node_modules/@node-red/editor-client/src/sass/header.scss
+Alteração de arquivos scss:
+// Adicionar no inicio do arquivo
+#red-ui-main-container.hide{
+    //Remover espaço barra de menu
+    top: 0px !important;
+}
+
+Adicionar em #red-ui-header
+#red-ui-header {
+	....
+	//Não mostrar barra de menu com logo
+	display: none;
+	span.red-ui-header-logo { ...
+}
+
+# ARQUIVO 02
+Path: node-red/packages/node_modules/@node-red/editor-client/src/sass/tabs.scss
+Alteração em .red-ui-tab-button
+.red-ui-tab-button {
+   ...
+   display: none;
+}
+
+Adicionar:
+#red-ui-tab-context-link-button{
+    display: none !important;
+}
+
+#red-ui-tab-config-link-button{
+    display: none !important;
+}
+
+.red-ui-tab-link-button-menu{
+    display: none !important;
+}
+
+# ARQUIVO 03
+Path: node-red/packages/node_modules/@node-red/editor-client/src/sass/workspace.scss
+Adicionar acima de #red-ui-workspace-tabs:not:
+
+#red-ui-workspace-tabs{
+    display: none;
+}
+
+
+OBS: Após alteração é necessário compilar
+npm run build
+
+E iniciar
+npm start
